@@ -82,7 +82,7 @@ namespace OpencascadePart
         /// <returns></returns>
         public bool Contains(gp_Pnt p)
         {
-            if (pts.Count<3) // fuck it if it was a face containing vectors and not points TODO: implement it 
+            if (pts.Count<3) // if it was a face containing vectors and not points it doesn't work TODO: implement it 
             {
                 return true; // if we do not have enough points or vectors then it means that we are constructing a face so any point would fit in our new face
             } else
@@ -136,7 +136,7 @@ namespace OpencascadePart
             {
                 if (pts.Count > 2)
                 {
-                    return new Triangle(pts[0], pts[1], pts[2]).Normal;
+                    return Pnt.Normalize(Pnt.Cross(pts[1] - pts[0], pts[2] - pts[0]));
                 }
                 else if (pts.Count == 2)
                 {
@@ -351,7 +351,8 @@ namespace OpencascadePart
         {
             // nothing verifies that points are really in the same face, be careful
 
-
+            // Edit 27/08/19: it must be useless to perform a change of the coordinate system as we are comparing the angles between the different edges defined by the points of the planar face
+            //____________________________________________________________________________________________________________________________________________
             // calculation of the new orthogonal coordinate system
             Face f = new Face(this);
             List<Pnt> c = f.CoordinateSystem; // coordinate system of our face
@@ -375,6 +376,12 @@ namespace OpencascadePart
             //new Face(new List<Pnt>() { f.pts[0], f.pts[1], f.pts[2] }).Normale.Log();
             //new Face(new List<Pnt>() { f.pts[3], f.pts[1], f.pts[2] }).Normale.Log();
             // we get the same results, which implies that they are on the same plan, which is kind of rassurant
+            //___________________________________________________________________________________________________________________________________________*/
+
+            // the changement of coordinate system can be used to take a pivot that would be on a corner 
+            // to avoid an infinite loop when the first given point is not on the border
+            // even though Opencascade only gives us points on the border
+            // and then the change of coordinate system can also be used to calculate if "wether it turns right or left" by using a cross product instead of calculating the angle
 
             // calculation of the superior hull (at this point it's like if points were in 2D )
             List<int> ordonnedIndices = new List<int> { 0 }; // we decide that the first point will be also the first indice

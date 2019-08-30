@@ -1,12 +1,7 @@
-﻿using BRep;
-using Geom;
-using gp;
+﻿using gp;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using TopAbs;
-using TopExp;
-using TopoDS;
 
 namespace OpencascadePart
 {
